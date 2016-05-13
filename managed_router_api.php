@@ -64,19 +64,34 @@ class ManagedRouterAPI {
 		return $result;
 	}
 
-	public function search($params = ''){
-		if($params != '') {
+	public function search($params = '',$limit = 0){
+		if(($params != '') && ($limit == 0 )) {
 			if(is_string($params)){
 				$params = array($params);
 				$result_string = $this->startCurl($this->search_url,$params);
 			}
-		}else {
+		} else if(($params != '') && ($limit != 0 )) {
+			$query = array(
+				"q" => $params,
+				"limit" => $limit
+				);
+			$result_string = $this->startCurl($this->search_url,$query);	
+
+		} else {
 			$result_string = $this->startCurl($this->search_url);	
 		}
-		echo "<pre>";
-		var_dump($result_string);
-		echo "</pre>";
 
+		return $result_string;
+	}
+
+	public function add($serial, $mac, $name){
+		$params = array(
+  			"serial"=>$serial,
+  			"mac"=>$mac,
+  			"name"=>$name
+		);
+
+		$result_string = $this->startCurl($this->add_url,$params);	
 	}
 
 	
