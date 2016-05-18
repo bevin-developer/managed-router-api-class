@@ -81,7 +81,14 @@ class ManagedRouterAPI {
 			$result_string = $this->startCurl($this->search_url);	
 		}
 
-		return $result_string;
+		$routerList = json_decode($result_string);
+		
+		if(is_array($routerList)){
+			return $routerList;
+		} else {
+			return false;
+		}
+		
 	}
 
 	public function add($serial, $mac, $name){
@@ -91,9 +98,16 @@ class ManagedRouterAPI {
   			"name"=>$name
 		);
 
-		$result_string = $this->startCurl($this->add_url,$params);	
+		$result_string = $this->startCurl($this->add_url,$params);
 
+		//$router = json_decode($result_string);
+		
 		return $result_string;
+		/*if(is_array($router)){
+			return $router;
+		} else {
+			return false;
+		}*/
 	}
 
 	public function update($routerId, $serial, $field, $value){
@@ -113,7 +127,13 @@ class ManagedRouterAPI {
 
 		$result_string = $this->startCurl($this->update_url,$params);
 
-		return $result_string;
+		$router = json_decode($result_string);
+		
+		if(is_object($router)){
+			return $router;
+		} else {
+			return false;
+		}
 	}
 
 	public function delete($routerId, $serial) {
@@ -135,8 +155,12 @@ class ManagedRouterAPI {
 				);
 		$result_string = $this->startCurl($this->undelete_url,$params);
 
-		return $result_string
-		
+		$router = json_decode($result_string);
+		if(is_array($router)){
+			return $router[0];	
+		} else {
+			return false;
+		}
 	}
 	
 
