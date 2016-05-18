@@ -92,7 +92,53 @@ class ManagedRouterAPI {
 		);
 
 		$result_string = $this->startCurl($this->add_url,$params);	
+
+		return $result_string;
 	}
+
+	public function update($routerId, $serial, $field, $value){
+		if($field === "mac"){
+			$params = array(
+				'id' => $routerId,
+				'serial'=> $serial,
+				'new' => array('mac' => $value)
+				);	
+		} else if($field === "name") {
+			$params = array(
+				'id' => $routerId,
+				'serial'=> $serial,
+				'new' => array('name' => $value)
+				);	
+		}
+
+		$result_string = $this->startCurl($this->update_url,$params);
+
+		return $result_string;
+	}
+
+	public function delete($routerId, $serial) {
+		$params = array(
+				'id'=> $routerId,
+				'serial' => $serial
+				);
+		$result_string = $this->startCurl($this->delete_url,$params);
+		
+		return $result_string;
+
+		
+	}
+
+	public function undelete($routerId, $serial) {
+		$params = array(
+				'id'=> $routerId,
+				'serial' => $serial
+				);
+		$result_string = $this->startCurl($this->undelete_url,$params);
+
+		return $result_string
+		
+	}
+	
 
 	
 }
