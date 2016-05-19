@@ -100,14 +100,13 @@ class ManagedRouterAPI {
 
 		$result_string = $this->startCurl($this->add_url,$params);
 
-		//$router = json_decode($result_string);
+		$router = json_decode($result_string);
 		
-		return $result_string;
-		/*if(is_array($router)){
+		if(is_array($router)){
 			return $router;
 		} else {
 			return false;
-		}*/
+		}
 	}
 
 	public function update($routerId, $serial, $field, $value){
