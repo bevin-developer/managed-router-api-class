@@ -11,6 +11,18 @@ class ManagedRouterAPI {
 	protected $password;
 	protected $display_errors;
 	protected $token;
+	protected $logged_in;
+
+	/**
+	     * Makes an HTTP POST request to the login url with 3 variables username and password.
+	     *Also, 
+	     *
+	     * @param string $url
+	     * @param string $username 
+	     * @param string $password 
+	     * @param boolean $display_errors 
+	     * @return boolean
+    **/
 
 	function __construct($url, $username, $password, $display_errors = false) {
 
@@ -24,7 +36,12 @@ class ManagedRouterAPI {
 		$this->username = $username;
 		$this->password = $password;
 		$this->display_errors = $display_errors;
-		$this->login();
+		$this->logged_in = $this->login();
+		if($this->logged_in){
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	public function login(){
@@ -41,8 +58,14 @@ class ManagedRouterAPI {
 		);                                                 
 		$result_string = curl_exec($ch);
 		$result = json_decode($result_string);
-		$this->token = $result->token;
-		curl_close($ch);
+		if(property_exists($result,'error')){
+			curl_close($ch);
+			return false;
+		} else{
+			$this->token = $result->token;	
+			return true;
+		}
+
 	}
 
 	public function startCurl($url, $params = ''){
