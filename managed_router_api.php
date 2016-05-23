@@ -12,6 +12,7 @@ class ManagedRouterAPI {
 	protected $display_errors;
 	protected $token;
 	protected $logged_in;
+	public $response;
 
 	/**
 	     * Makes an HTTP POST request to the login url with 3 variables username and password.
@@ -43,7 +44,14 @@ class ManagedRouterAPI {
 			return false;
 		}
 	}
-
+	/**
+	     * Makes an HTTP POST request to the login url with 3 variables from constructor.
+	     *Also, 
+	     * 
+	     *Sets token needed for Authorization: in Header
+	     *
+	     * @return boolean
+    **/
 	public function login(){
 
 		$data = array("username" => $this->username, "password" => $this->password);
@@ -57,16 +65,27 @@ class ManagedRouterAPI {
 		    'Content-Length: ' . strlen($data_string))         
 		);                                                 
 		$result_string = curl_exec($ch);
+		$this->response = $result_string;
 		$result = json_decode($result_string);
+		
 		if(property_exists($result,'error')){
 			curl_close($ch);
 			return false;
 		} else{
-			$this->token = $result->token;	
+			$this->token = $result->token;
+			curl_close($ch);	
 			return true;
 		}
 
 	}
+	/**
+	     * Makes an HTTP POST request to the url with 1 variable.
+	     *
+	     * @param string $url
+	     * @param string $param 
+	     * @return string $result
+	     *
+    **/
 
 	public function startCurl($url, $params = ''){
 		if($params != '')
@@ -83,9 +102,19 @@ class ManagedRouterAPI {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);    
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);                                                 
 		$result = curl_exec($ch);
+		$this->response = $result;
 		curl_close($ch);
 		return $result;
 	}
+
+	/**
+	     * Makes an HTTP POST request to the search url with 2 variables.
+	     *
+	     * @param string $params
+	     * @param integer $limit 
+	     * @return array $result
+	     *
+    **/
 
 	public function search($params = '',$limit = 0){
 		if(($params != '') && ($limit == 0 )) {
@@ -106,6 +135,7 @@ class ManagedRouterAPI {
 
 		$routerList = json_decode($result_string);
 		
+
 		if(is_array($routerList)){
 			return $routerList;
 		} else {
@@ -113,6 +143,17 @@ class ManagedRouterAPI {
 		}
 		
 	}
+
+	/**
+	     * Makes an HTTP POST request to the add url with 3 variables and returns
+	     *router array if update is successful.
+	     *
+	     * @param string $serial
+	     * @param string $mac
+	     * @param string $name
+	     * @return array $router 
+	     *
+    **/
 
 	public function add($serial, $mac, $name){
 		$params = array(
@@ -183,6 +224,10 @@ class ManagedRouterAPI {
 		} else {
 			return false;
 		}
+	}
+
+	public function getResponse(){
+		return $this->response;
 	}
 	
 
