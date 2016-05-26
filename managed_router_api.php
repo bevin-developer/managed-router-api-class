@@ -173,6 +173,17 @@ class ManagedRouterAPI {
 		}
 	}
 
+	/**
+	     * Makes an HTTP POST request to update url with 4 variable.
+	     *
+	     * @param integer $routerId
+	     * @param string $serial
+	     * @param string $field
+	     * @param string $value
+	     * @return object $result
+	     *
+    **/
+
 	public function update($routerId, $serial, $field, $value){
 		if($field === "mac"){
 			$params = array(
@@ -199,6 +210,14 @@ class ManagedRouterAPI {
 		}
 	}
 
+	/**
+	     * Makes an HTTP POST request to delete url with 2 variable.
+	     *
+	     * @param integer $routerId
+	     * @param string $serial
+	     * @return array $result
+	     *
+    **/
 	public function delete($routerId, $serial) {
 		$params = array(
 				'id'=> $routerId,
@@ -206,10 +225,22 @@ class ManagedRouterAPI {
 				);
 		$result_string = $this->startCurl($this->delete_url,$params);
 		
-		return $result_string;
-
-		
+		$status = json_decode($result_string);
+		if(is_array($status)){
+			return $status;
+		}else {
+			return false;
+		}
 	}
+
+	/**
+	     * Makes an HTTP POST request to undelete url with 2 variable.
+	     *
+	     * @param integer $routerId
+	     * @param string $serial
+	     * @return object $router
+	     *
+    **/
 
 	public function undelete($routerId, $serial) {
 		$params = array(
@@ -226,6 +257,9 @@ class ManagedRouterAPI {
 		}
 	}
 
+	/**
+    	*Returns the json string from the API after an action is performed. 
+    **/
 	public function getResponse(){
 		return $this->response;
 	}
